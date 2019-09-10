@@ -1,0 +1,140 @@
+---
+# Source: mui-test-app1/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: prod-mui-test-app1
+  labels:
+    app.kubernetes.io/name: mui-test-app1
+    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/instance: prod-mui-test-app1
+    app.kubernetes.io/managed-by: Tiller
+    appNamespace: default
+    app: mui-test-app1
+    version: latest
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: mui-test-app1
+
+---
+# prod-mui-test-app1-test-connection
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "prod-mui-test-app1-test-connection"
+  labels:
+    app.kubernetes.io/name: mui-test-app1
+    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/instance: prod-mui-test-app1
+    app.kubernetes.io/managed-by: Tiller
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['prod-mui-test-app1:3000']
+  restartPolicy: Never
+
+---
+# Source: mui-test-app1/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-mui-test-app1
+  labels:
+    app.kubernetes.io/name: mui-test-app1
+    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/instance: prod-mui-test-app1
+    app.kubernetes.io/managed-by: Tiller    
+    app: mui-test-app1
+    version: latest
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: mui-test-app1
+      version: latest
+  template:
+    metadata:
+      labels:
+        app: mui-test-app1
+        version: latest
+    spec:
+      imagePullSecrets:
+        - name: freebytech-regcred      
+      containers:
+        - name: mui-test-app1
+          image: "registry.freebytech.com/k8s-tests/mui-test-app1:latest"
+          imagePullPolicy: Always
+          env:
+            - name: ENVIRONMENT_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: ENVIRONMENT_NAME
+                  name: standard-env-secrets
+            
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+            
+
+---
+# Source: mui-test-app1/templates/virtualService.yaml
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: prod-mui-test-app1
+  labels:
+    app.kubernetes.io/name: mui-test-app1
+    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/instance: prod-mui-test-app1
+    app.kubernetes.io/managed-by: Tiller
+spec:
+  hosts:
+    - dev-apps.devsandbox.co
+    - apps.devsandbox.co
+  gateways:
+    - istio-system/apps-devsandbox-gateway
+  http:
+  - match:
+    - uri:
+        prefix: "/app1"
+      headers:
+        cookie:
+          regex: "^(.*?;)?(environment=prod)(;.*)?$" 
+    route:
+    - destination:
+        host: prod-mui-test-app1
+        port:
+          number: 3000
+  - match:
+    - uri:
+        prefix: "/App1"
+      headers:
+        cookie:
+          regex: "^(.*?;)?(environment=prod)(;.*)?$" 
+    route:
+    - destination:
+        host: prod-mui-test-app1
+        port:
+          number: 3000

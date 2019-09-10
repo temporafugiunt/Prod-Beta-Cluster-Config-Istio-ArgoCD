@@ -1,0 +1,47 @@
+
+---
+# Source: mui-test-app1/templates/virtualService.yaml
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mui-test-app1
+  labels:
+    app.kubernetes.io/name: mui-test-app1
+    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/instance: beta-mui-test-app1
+    app.kubernetes.io/managed-by: Tiller
+spec:
+  hosts:
+    - apps.devsandbox.co
+  gateways:
+    - istio-system/apps-devsandbox-gateway
+  http:
+  - match:
+    - uri:
+        prefix: "/app1"
+    route:
+    - destination:
+        host: prod-mui-test-app1
+        port:
+          number: 3000
+      weight: 50
+    - destination:
+        host: beta-mui-test-app1
+        port:
+          number: 3000
+      weight: 50
+  - match:
+    - uri:
+        prefix: "/App1"
+    route:
+    - destination:
+        host: prod-mui-test-app1
+        port:
+          number: 3000
+      weight: 50
+    - destination:
+        host: beta-mui-test-app1
+        port:
+          number: 3000
+      weight: 50

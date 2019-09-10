@@ -1,0 +1,97 @@
+---
+# Source: mui-test-app1/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: beta-mui-test-app1
+  labels:
+    app.kubernetes.io/name: mui-test-app1
+    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/instance: beta-mui-test-app1
+    app.kubernetes.io/managed-by: Tiller
+    appNamespace: default
+    app: mui-test-app1
+    version: latest
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: mui-test-app1
+
+---
+# beta-mui-test-app1-test-connection
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "beta-mui-test-app1-test-connection"
+  labels:
+    app.kubernetes.io/name: mui-test-app1
+    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/instance: beta-mui-test-app1
+    app.kubernetes.io/managed-by: Tiller
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['beta-mui-test-app1:3000']
+  restartPolicy: Never
+
+---
+# Source: mui-test-app1/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beta-mui-test-app1
+  labels:
+    app.kubernetes.io/name: mui-test-app1
+    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/instance: beta-mui-test-app1
+    app.kubernetes.io/managed-by: Tiller    
+    app: mui-test-app1
+    version: latest
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: mui-test-app1
+      version: latest
+  template:
+    metadata:
+      labels:
+        app: mui-test-app1
+        version: latest
+    spec:
+      imagePullSecrets:
+        - name: freebytech-regcred      
+      containers:
+        - name: mui-test-app1
+          image: "registry.freebytech.com/k8s-tests/mui-test-app1:latest"
+          imagePullPolicy: Always
+          env:
+            - name: ENVIRONMENT_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: ENVIRONMENT_NAME
+                  name: standard-env-secrets
+            
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
