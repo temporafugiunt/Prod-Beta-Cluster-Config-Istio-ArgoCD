@@ -57,12 +57,11 @@ metadata:
     appNamespace: production
     version: 1.0.19.904
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels: 
       app: mui-test-app1      
       appNamespace: production
-      version: 1.0.19.904
   template:
     metadata:
       labels:
