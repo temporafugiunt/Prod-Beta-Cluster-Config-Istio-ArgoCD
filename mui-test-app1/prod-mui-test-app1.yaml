@@ -57,7 +57,7 @@ metadata:
     appNamespace: production
     version: 1.0.19.904
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels: 
       app: mui-test-app1      
