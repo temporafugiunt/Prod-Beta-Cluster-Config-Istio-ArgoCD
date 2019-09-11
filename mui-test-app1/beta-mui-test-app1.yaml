@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: Tiller
     appNamespace: default
     app: mui-test-app1
-    version: latest
+    version: 1.0.20.904
 spec:
   type: ClusterIP
   ports:
@@ -55,24 +55,24 @@ metadata:
     app.kubernetes.io/instance: beta-mui-test-app1
     app.kubernetes.io/managed-by: Tiller    
     app: mui-test-app1
-    version: latest
+    version: 1.0.20.904
 spec:
   replicas: 1
   selector:
     matchLabels: 
       app: mui-test-app1
-      version: latest
+      version: 1.0.20.904
   template:
     metadata:
       labels:
         app: mui-test-app1
-        version: latest
+        version: 1.0.20.904
     spec:
       imagePullSecrets:
         - name: freebytech-regcred      
       containers:
         - name: mui-test-app1
-          image: "registry.freebytech.com/k8s-tests/mui-test-app1:latest"
+          image: "registry.freebytech.com/k8s-tests/mui-test-app1:1.0.20.904"
           imagePullPolicy: Always
           env:
             - name: ENVIRONMENT_NAME
