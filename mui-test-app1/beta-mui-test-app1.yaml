@@ -5,10 +5,10 @@ kind: Service
 metadata:
   name: beta-mui-test-app1
   labels:
-    app.kubernetes.io/name: beta-mui-test-app1
+    app.kubernetes.io/name: mui-test-app1
     app.kubernetes.io/instance: beta-mui-test-app1
     appNamespace: beta
-    app: beta-mui-test-app1
+    app: mui-test-app1
     version: 1.0.20.904
 spec:
   type: ClusterIP
