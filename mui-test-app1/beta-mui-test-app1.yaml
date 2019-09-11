@@ -58,12 +58,11 @@ metadata:
     appNamespace: beta
     version: 1.0.20.904
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels: 
       app: mui-test-app1
       appNamespace: beta
-      version: 1.0.20.904
   template:
     metadata:
       labels:
