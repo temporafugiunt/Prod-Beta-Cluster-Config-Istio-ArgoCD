@@ -6,9 +6,7 @@ metadata:
   name: prod-mui-test-app1
   labels:
     app.kubernetes.io/name: mui-test-app1
-    helm.sh/chart: mui-test-app1-0.1.0
     app.kubernetes.io/instance: prod-mui-test-app1
-    app.kubernetes.io/managed-by: Tiller
     appNamespace: production
     app: mui-test-app1
     version: 1.0.19.904
@@ -21,6 +19,7 @@ spec:
       name: http
   selector:
     app: mui-test-app1
+    appNamespace: production
 
 ---
 # prod-mui-test-app1-test-connection
@@ -58,11 +57,12 @@ metadata:
     appNamespace: production
     version: 1.0.19.904
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels: 
       app: mui-test-app1      
       appNamespace: production
+      version: 1.0.19.904
   template:
     metadata:
       labels:
@@ -97,3 +97,4 @@ spec:
               port: http
           resources:
             {}
+  

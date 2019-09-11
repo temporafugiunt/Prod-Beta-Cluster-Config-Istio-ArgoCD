@@ -1,16 +1,15 @@
 ---
-# Source: mui-test-app1/templates/service.yaml
+# Source: beta-mui-test-app1/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: beta-mui-test-app1
   labels:
-    app.kubernetes.io/name: mui-test-app1
-    helm.sh/chart: mui-test-app1-0.1.0
+    app.kubernetes.io/name: beta-mui-test-app1
     app.kubernetes.io/instance: beta-mui-test-app1
     app.kubernetes.io/managed-by: Tiller
-    appNamespace: default
-    app: mui-test-app1
+    appNamespace: beta
+    app: beta-mui-test-app1
     version: 1.0.20.904
 spec:
   type: ClusterIP
@@ -21,6 +20,7 @@ spec:
       name: http
   selector:
     app: mui-test-app1
+    appNamespace: beta
 
 ---
 # beta-mui-test-app1-test-connection
@@ -50,30 +50,28 @@ kind: Deployment
 metadata:
   name: beta-mui-test-app1
   labels:
-    app.kubernetes.io/name: mui-test-app1
+    app.kubernetes.io/name: beta-mui-test-app1
     helm.sh/chart: mui-test-app1-0.1.0
     app.kubernetes.io/instance: beta-mui-test-app1
     app.kubernetes.io/managed-by: Tiller    
-    app: mui-test-app1
+    app: beta-mui-test-app1
     appNamespace: beta
     version: 1.0.20.904
 spec:
   replicas: 2
   selector:
     matchLabels: 
-      app: mui-test-app1
-      appNamespace: beta
+      app: beta-mui-test-app1
   template:
     metadata:
       labels:
-        app: mui-test-app1
-        appNamespace: beta
+        app: beta-mui-test-app1
         version: 1.0.20.904
     spec:
       imagePullSecrets:
         - name: freebytech-regcred      
       containers:
-        - name: mui-test-app1
+        - name: beta-mui-test-app1
           image: "registry.freebytech.com/k8s-tests/mui-test-app1:1.0.20.904"
           imagePullPolicy: Always
           env:
