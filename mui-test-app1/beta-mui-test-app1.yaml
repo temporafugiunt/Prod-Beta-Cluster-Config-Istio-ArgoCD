@@ -66,7 +66,7 @@ spec:
     metadata:
       labels:
         app: mui-test-app1
-        appNamespace: production
+        appNamespace: beta
         version: 1.0.20.904
     spec:
       imagePullSecrets:
