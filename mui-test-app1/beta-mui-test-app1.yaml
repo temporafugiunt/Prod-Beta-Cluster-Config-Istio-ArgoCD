@@ -55,17 +55,20 @@ metadata:
     app.kubernetes.io/instance: beta-mui-test-app1
     app.kubernetes.io/managed-by: Tiller    
     app: mui-test-app1
+    appNamespace: beta
     version: 1.0.20.904
 spec:
   replicas: 1
   selector:
     matchLabels: 
       app: mui-test-app1
+      appNamespace: beta
       version: 1.0.20.904
   template:
     metadata:
       labels:
         app: mui-test-app1
+        appNamespace: beta
         version: 1.0.20.904
     spec:
       imagePullSecrets:
