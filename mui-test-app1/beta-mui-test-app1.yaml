@@ -61,7 +61,7 @@ spec:
   selector:
     matchLabels: 
       app: mui-test-app1      
-      appNamespace: production
+      appNamespace: beta
   template:
     metadata:
       labels:
